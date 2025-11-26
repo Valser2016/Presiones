@@ -346,37 +346,27 @@ Rango por sección: ${infSeccion.toFixed(2)} - ${supSeccion.toFixed(2)} PSI`;
     }
 
     // Envío correo
-    function enviarCorreo() {
-      const pruebas = JSON.parse(localStorage.getItem("pruebasAprobadas")) || [];
-      if (pruebas.length === 0) return alert("No hay pruebas aprobadas para enviar.");
+async function enviarCorreo(data) {
+    try {
+        const res = await fetch("/api/enviar-correo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
 
-      const contenido = pruebas.map((p, i) =>
-        `#${i + 1} - ${p.fecha}
-Cliente: ${p.client_proy}
-Tag: ${p.tag}
-Set: ${p.set} PSI
-Sección: ${p.seccion}
-Tipo: ${p.tipo}
-Manómetro: ${p.manometro}
-Presiones: ${p.presiones.join(", ")}
-Promedio: ${p.promedio.toFixed(2)} PSI
-Desviación total: ${p.desviacionTotal ? p.desviacionTotal.toFixed(4) : "N/A"} PSI
-Incertidumbre manómetro: ${p.incertidumbre.toFixed(2)} PSI`
-      ).join("\n----------------\n");
+        const json = await res.json();
 
-      const params = {
-        to_name: "Valser",
-        to_email: "tecnicodeservicios@valserindustriales.com",
-        message: contenido
-      };
+        if (json.status === "ok") {
+            alert("Correo enviado exitosamente");
+        } else {
+            alert("Error enviando: " + json.msg);
+        }
 
-      emailjs.send("service_vp5zw8m", "template_6v8y173", params)
-        .then(() => {
-          alert("📤 Correo enviado con éxito");
-          localStorage.removeItem("pruebasAprobadas");
-        })
-        .catch(() => alert("❌ Error al enviar el correo."));
+    } catch (e) {
+        guardarColaOffline(data);
+        alert("Sin internet. El correo se enviará automáticamente.");
     }
+}
 
     // SW
     if ('serviceWorker' in navigator) {
@@ -384,6 +374,33 @@ Incertidumbre manómetro: ${p.incertidumbre.toFixed(2)} PSI`
         .then(() => console.log("SW registrado correctamente"))
         .catch(e => console.error("SW falló", e));
     }
+
+    function guardarColaOffline(data) {
+    let cola = JSON.parse(localStorage.getItem("colaCorreos") || "[]");
+    cola.push(data);
+    localStorage.setItem("colaCorreos", JSON.stringify(cola));
+}
+
+async function procesarCola() {
+    let cola = JSON.parse(localStorage.getItem("colaCorreos") || "[]");
+
+    if (cola.length === 0) return;
+
+    for (let i = 0; i < cola.length; i++) {
+        try {
+            await enviarCorreo(cola[i]);
+            cola.splice(i, 1);
+            i--;
+        } catch { return; }
+    }
+
+    localStorage.setItem("colaCorreos", JSON.stringify(cola));
+}
+
+// cuando vuelve el internet:
+window.addEventListener("online", procesarCola);
+
   </script>
 </body>
 </html>
+
