@@ -302,31 +302,31 @@
       // Construir resultado textual
       let resultado = aprobadoFinal ? "✅ Aprobado" : "❌ Repite";
 
-      if (erroresRep.length > 0) {
-        resultado += "
+if (erroresRep.length > 0) {
+  resultado += "
 
 - Falló prueba de repetibilidad
 " + erroresRep.join("
 ");
-      }
-      if (erroresSec.length > 0) {
-        resultado += "
+}
+if (erroresSec.length > 0) {
+  resultado += "
 
 - Falló prueba por sección
 " + erroresSec.join("
 ");
-      }
-      if (errorDesviacion) {
-        resultado += "
+}
+if (errorDesviacion) {
+  resultado += "
 
 ❌ Desviación de datos muy grande, prueba no pasa.";
-      }
-
-      if (!manometroOK) {
-        resultado += "
+}
+if (!manometroOK) {
+  resultado += "
 
 ❌ Manómetro mal seleccionado, prueba no pasa.";
-      }
+}
+
 
       resultado += `
 
@@ -414,3 +414,4 @@ Incertidumbre manómetro: ${p.incertidumbre.toFixed(2)} PSI`
   </script>
 </body>
 </html>
+
