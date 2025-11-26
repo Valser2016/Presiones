@@ -334,15 +334,7 @@ Rango repetibilidad: ${infRep.toFixed(2)} - ${supRep.toFixed(2)} PSI`;
       resultado += `
 Rango por sección: ${infSeccion.toFixed(2)} - ${supSeccion.toFixed(2)} PSI`;
 
-      if (tipo === "Banco") {
-        resultado += `
-
-Desviación total (STD/√n + incertidumbre): ${desviacionTotal.toFixed(4)} PSI`;
-        resultado += `
-Límite permitido (promedio * 1%): ${(promedio * 0.01).toFixed(4)} PSI`;
-        resultado += `
-(Incertidumbre manómetro seleccionada: ${incertidumbre.toFixed(2)} PSI)`;
-      }
+      // NO mostrar líneas de desviación/limite/incertidumbre en pantalla (según tu pedido)
 
       mostrarMensaje(resultado);
 
