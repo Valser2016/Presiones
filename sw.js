@@ -1,4 +1,4 @@
-const CACHE_NAME = 'presiones-cache-v10';
+const CACHE_NAME = 'presiones-cache-v11';
 const urlsToCache = [
   './',
   './index.html?v=3',
@@ -51,6 +51,7 @@ self.addEventListener('fetch', event => {
     })
   );
 });
+
 
 
 
