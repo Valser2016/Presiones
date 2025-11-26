@@ -97,7 +97,12 @@
   <div class="fila-doble">
     <div class="columna">
       <input type="text" id="Tag" placeholder="Tag/Serial">
-      <input type="number" id="set" placeholder="Set de presión válvula">
+      <select id="sel_prueb">
+        <option value="Tipo de prueba" disabled selected>Tipo de prueba</option>
+        <option value="Banco">Banco</option>
+        <option value="VST">VST</option>
+      </select>
+
 
       <select id="manometro" style="display:none;">
         <option value="Manómetro" disabled selected>Manómetro</option>
@@ -114,12 +119,8 @@
         <option value="Sec. I">Sec. I</option>
         <option value="Sec. VIII">Sec. VIII</option>
       </select>
+      <input type="number" id="set" placeholder="Set de presión válvula">
 
-      <select id="sel_prueb">
-        <option value="Tipo de prueba" disabled selected>Tipo de prueba</option>
-        <option value="Banco">Banco</option>
-        <option value="VST">VST</option>
-      </select>
     </div>
   </div>
 
@@ -314,3 +315,4 @@
 
 </body>
 </html>
+
