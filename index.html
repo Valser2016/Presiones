@@ -10,7 +10,7 @@
     body {
       font-family: sans-serif;
       padding: 20px;
-      max-width: 450px;
+      max-width: 600px;
       margin: auto;
       background-color: #f9f9f9;
       color: #333;
@@ -41,6 +41,19 @@
       background-color: #fff;
     }
 
+    .fila-doble {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .columna {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
     button {
       display: block;
       width: 100%;
@@ -59,8 +72,8 @@
 
     #resultado {
       font-weight: bold;
-      font-size: 1.2em;
-      margin-top: 20px;
+      font-size: 1.05em;
+      margin-top: 18px;
       color: #333;
       white-space: pre-line;
     }
@@ -70,19 +83,6 @@
       margin: 0 auto 20px;
       max-width: 250px;
       height: auto;
-    }
-
-    .fila-doble {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .columna {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
     }
   </style>
 </head>
@@ -94,33 +94,33 @@
 
   <input type="text" id="Client_Proy" placeholder="Cliente/Proyecto">
 
-<div class="fila-doble">
-  <div class="columna">
-    <input type="text" id="Tag" placeholder="Tag/Serial">
-    <select id="sel_prueb">
-      <option value="Tipo de prueba" disabled selected>Tipo de prueba</option>
-      <option value="Banco">Banco</option>
-      <option value="VST">VST</option>
-    </select>
-    <select id="manometro" style="display:none;">
-      <option value="Manómetro" disabled selected>Manómetro</option>
-      <option value="MAN-002 (Crystal 5k)">MAN-002 (Crystal 5k)</option>
-      <option value="MAN-003 (Additel)">MAN-003 (Additel)</option>
-      <option value="MAN-005 (Crystal 1k)">MAN-005 (Crystal 1k)</option>
-      <option value="MAN-006 (Wika)">MAN-006 (Wika)</option>
-    </select>
-  </div>
+  <div class="fila-doble">
+    <div class="columna">
+      <input type="text" id="Tag" placeholder="Tag/Serial">
+      <select id="sel_prueb">
+        <option value="Tipo de prueba" disabled selected>Tipo de prueba</option>
+        <option value="Banco">Banco</option>
+        <option value="VST">VST</option>
+      </select>
 
-  <div class="columna">
-    <select id="sel_seccion">
-      <option value="Sección válvula" disabled selected>Sección válvula</option>
-      <option value="Sec. I">Sec. I</option>
-      <option value="Sec. VIII">Sec. VIII</option>
-    </select>
-    <input type="number" id="set" placeholder="Set de presión válvula">
-  </div>
-</div>
+      <select id="manometro" style="display:none;">
+        <option value="Manómetro" disabled selected>Manómetro</option>
+        <option value="MAN-002 (Crystal 5k)">MAN-002 (Crystal 5k)</option>
+        <option value="MAN-003 (Additel)">MAN-003 (Additel)</option>
+        <option value="MAN-005 (Crystal 1k)">MAN-005 (Crystal 1k)</option>
+        <option value="MAN-006 (Wika)">MAN-006 (Wika)</option>
+      </select>
+    </div>
 
+    <div class="columna">
+      <select id="sel_seccion">
+        <option value="Sección válvula" disabled selected>Sección válvula</option>
+        <option value="Sec. I">Sec. I</option>
+        <option value="Sec. VIII">Sec. VIII</option>
+      </select>
+      <input type="number" id="set" placeholder="Set de presión válvula">
+    </div>
+  </div>
 
   <input type="number" id="p1" placeholder="Escape 1 (PSI)">
   <input type="number" id="p2" placeholder="Escape 2 (PSI)">
@@ -135,8 +135,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <script>
+    // ---- Inicialización UI ----
     document.addEventListener('DOMContentLoaded', () => {
-
       const selPrueba = document.getElementById("sel_prueb");
       const manometro = document.getElementById("manometro");
       const p4 = document.getElementById("p4");
@@ -164,10 +164,12 @@
         toggleManometro();
       });
 
+      // Ejecutar al cargar para dejar UI consistente
       togglePresiones();
       toggleManometro();
     });
 
+    // Inicializa EmailJS (tu key)
     (function () {
       emailjs.init("tlcM6igKsBWhU-7x1");
     })();
@@ -176,8 +178,8 @@
       document.getElementById("resultado").innerText = msg;
     }
 
+    // --- Función principal de validación y cálculo ---
     function validar() {
-
       const client_proy = document.getElementById("Client_Proy").value.trim();
       const tag = document.getElementById("Tag").value.trim();
       const set = parseFloat(document.getElementById("set").value);
@@ -190,6 +192,7 @@
       const p3 = parseFloat(document.getElementById("p3").value);
       const p4 = parseFloat(document.getElementById("p4").value);
 
+      // Validaciones básicas
       if (!client_proy) return mostrarMensaje("⚠️ Falta Cliente/Proyecto.");
       if (!tag) return mostrarMensaje("⚠️ Falta Tag/Serial.");
       if (isNaN(set)) return mostrarMensaje("⚠️ Falta set de presión válvula.");
@@ -197,26 +200,28 @@
       if (seccion === "Sección válvula") return mostrarMensaje("⚠️ Debes seleccionar la sección válvula.");
       if (tipo === "Tipo de prueba") return mostrarMensaje("⚠️ Debes seleccionar el tipo de prueba.");
 
+      // Armar array de presiones
       let presiones = [
         { nombre: "Escape 1", valor: p1 },
         { nombre: "Escape 2", valor: p2 },
         { nombre: "Escape 3", valor: p3 }
       ];
-
       if (tipo === "Banco") presiones.push({ nombre: "Escape 4", valor: p4 });
 
       if (presiones.some(p => isNaN(p.valor))) {
         return mostrarMensaje(`⚠️ Faltan presiones para ${tipo}`);
       }
 
+      // Promedio
       const promedio = presiones.reduce((acc, p) => acc + p.valor, 0) / presiones.length;
 
+      // Rango repetibilidad (como antes)
       const deltaRep = promedio > 50 ? promedio * 0.01 : 0.5;
       const infRep = promedio - deltaRep;
       const supRep = promedio + deltaRep;
 
+      // Rango por sección (como antes)
       let deltaSeccion = 0;
-
       if (seccion === "Sec. I") {
         if (set <= 70) deltaSeccion = 2;
         else if (set <= 300) deltaSeccion = set * 0.03;
@@ -225,12 +230,11 @@
       } else if (seccion === "Sec. VIII") {
         deltaSeccion = set <= 70 ? 2 : set * 0.03;
       }
-
       const ajuste = set <= 500 ? 0.2 : set <= 1000 ? 1 : 1.8;
-
       const infSeccion = set - deltaSeccion + ajuste;
       const supSeccion = set + deltaSeccion - ajuste;
 
+      // Errores por repetibilidad y sección
       const erroresRep = presiones
         .filter(p => p.valor < infRep || p.valor > supRep)
         .map(p => `${p.nombre}: ${p.valor} PSI fuera del rango de repetibilidad`);
@@ -239,22 +243,71 @@
         .filter(p => p.valor < infSeccion || p.valor > supSeccion)
         .map(p => `${p.nombre}: ${p.valor} PSI fuera del rango por sección`);
 
-      const aprobado = erroresRep.length === 0 && erroresSec.length === 0;
+      // --- INCERTIDUMBRES POR MANÓMETRO ---
+      let incertidumbre = 0;
+      if (manometro.includes("MAN-002")) incertidumbre = 0.87;
+      else if (manometro.includes("MAN-003")) incertidumbre = 1.78;
+      else if (manometro.includes("MAN-005")) incertidumbre = 0.18;
+      else incertidumbre = 0; // otros/manómetro no especificado
 
-      let resultado = aprobado ? "✅ Aprobado" : "❌ Repite";
+      // --- DESVIACION ESTANDAR Y SUMA DE INCERTIDUMBRE (solo Banco) ---
+      let desviacionTotal = 0;
+      if (tipo === "Banco") {
+        const valores = presiones.map(p => p.valor);
+        const n = valores.length; // debería ser 4
 
-      if (erroresRep.length > 0)
+        // desviación estándar de la muestra (n-1)
+        const media = promedio;
+        const sumatoria = valores.reduce((acc, v) => acc + Math.pow(v - media, 2), 0);
+        const desviacionEstandar = n > 1 ? Math.sqrt(sumatoria / (n - 1)) : 0;
+
+        // dividir por sqrt(n)
+        const errorDividido = n > 0 ? desviacionEstandar / Math.sqrt(n) : 0;
+
+        // suma de incertidumbre según manómetro
+        desviacionTotal = errorDividido + incertidumbre;
+      }
+
+      // --- VALIDACIÓN ADICIONAL POR DESVIACIÓN (solo Banco) ---
+      let errorDesviacion = false;
+      if (tipo === "Banco") {
+        const limite = promedio * 0.01; // 1% del promedio
+        // Si el límite es menor que la desviación total -> falla (dispersión grande)
+        if (limite < desviacionTotal) {
+          errorDesviacion = true;
+        }
+      }
+
+      // Aprobación base (repetibilidad + sección) y suma la condición de desviación
+      const aprobadoBase = erroresRep.length === 0 && erroresSec.length === 0;
+      const aprobadoFinal = aprobadoBase && !errorDesviacion;
+
+      // Construir resultado textual
+      let resultado = aprobadoFinal ? "✅ Aprobado" : "❌ Repite";
+
+      if (erroresRep.length > 0) {
         resultado += "\n\n- Falló prueba de repetibilidad\n" + erroresRep.join("\n");
-
-      if (erroresSec.length > 0)
+      }
+      if (erroresSec.length > 0) {
         resultado += "\n\n- Falló prueba por sección\n" + erroresSec.join("\n");
+      }
+      if (errorDesviacion) {
+        resultado += "\n\n❌ Desviación de datos muy grande, prueba no pasa.";
+      }
 
       resultado += `\n\nRango repetibilidad: ${infRep.toFixed(2)} - ${supRep.toFixed(2)} PSI`;
       resultado += `\nRango por sección: ${infSeccion.toFixed(2)} - ${supSeccion.toFixed(2)} PSI`;
 
+      if (tipo === "Banco") {
+        resultado += `\n\nDesviación total (STD/√n + incertidumbre): ${desviacionTotal.toFixed(4)} PSI`;
+        resultado += `\nLímite permitido (promedio * 1%): ${(promedio * 0.01).toFixed(4)} PSI`;
+        resultado += `\n(Incertidumbre manómetro seleccionada: ${incertidumbre.toFixed(2)} PSI)`;
+      }
+
       mostrarMensaje(resultado);
 
-      if (aprobado) {
+      // Guardar solo si aprobadoFinal = true
+      if (aprobadoFinal) {
         const prueba = {
           client_proy,
           tag,
@@ -264,6 +317,8 @@
           manometro,
           presiones: presiones.map(p => p.valor),
           promedio,
+          desviacionTotal,
+          incertidumbre,
           fecha: new Date().toLocaleString()
         };
 
@@ -271,6 +326,7 @@
         aprobadas.push(prueba);
         localStorage.setItem("pruebasAprobadas", JSON.stringify(aprobadas));
 
+        // Limpiar campos para nueva entrada
         document.getElementById("Tag").value = "";
         document.getElementById("p1").value = "";
         document.getElementById("p2").value = "";
@@ -279,19 +335,18 @@
       }
     }
 
+    // --- Envío de correo con pruebas aprobadas ---
     function enviarCorreo() {
-
       const pruebas = JSON.parse(localStorage.getItem("pruebasAprobadas")) || [];
-
       if (pruebas.length === 0) return alert("No hay pruebas aprobadas para enviar.");
 
       const contenido = pruebas.map((p, i) =>
-        `#${i + 1} - ${p.fecha}\nCliente: ${p.client_proy}\nTag: ${p.tag}\nSet: ${p.set} PSI\nSección: ${p.seccion}\nTipo: ${p.tipo}\nManómetro: ${p.manometro}\nPresiones: ${p.presiones.join(", ")}\nPromedio: ${p.promedio.toFixed(2)} PSI`
+        `#${i + 1} - ${p.fecha}\nCliente: ${p.client_proy}\nTag: ${p.tag}\nSet: ${p.set} PSI\nSección: ${p.seccion}\nTipo: ${p.tipo}\nManómetro: ${p.manometro}\nPresiones: ${p.presiones.join(", ")}\nPromedio: ${p.promedio.toFixed(2)} PSI\nDesviación total: ${p.desviacionTotal ? p.desviacionTotal.toFixed(4) : "N/A"} PSI\nIncertidumbre manómetro: ${p.incertidumbre.toFixed(2)} PSI`
       ).join("\n----------------\n");
 
       const params = {
         to_name: "Valser",
-        to_email: "tecnicodeservicios@valserindustrial.com",
+        to_email: "tecnicodeservicios@valserindustriales.com",
         message: contenido
       };
 
@@ -300,19 +355,18 @@
           alert("📤 Correo enviado con éxito");
           localStorage.removeItem("pruebasAprobadas");
         })
-        .catch(() => alert("❌ Error al enviar el correo."));
+        .catch((error) => {
+          console.error("Error al enviar:", error);
+          alert("❌ Error al enviar el correo.");
+        });
     }
 
+    // Registrar service worker si aplica
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log("SW registrado correctamente"))
         .catch((e) => console.error("SW falló", e));
     }
-
   </script>
-
 </body>
 </html>
-
-
-
