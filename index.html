@@ -178,6 +178,17 @@
       document.getElementById("resultado").innerText = msg;
     }
 
+    // Valida selección de manómetro según regla Excel
+    function validarManometroSeleccion(set, manometro) {
+      if (set < 800 && (manometro === "MAN-005 (Crystal 1k)" || manometro === "MAN-006 (Wika)")) {
+        return true;
+      }
+      if (set > 600 && (manometro === "MAN-002 (Crystal 5k)" || manometro === "MAN-003 (Additel)")) {
+        return true;
+      }
+      return false;
+    }
+
     // --- Función principal de validación y cálculo ---
     function validar() {
       const client_proy = document.getElementById("Client_Proy").value.trim();
@@ -268,6 +279,12 @@
         desviacionTotal = errorDividido + incertidumbre;
       }
 
+      // Validar selección de manómetro: si está mal -> falla la prueba
+      let manometroOK = true;
+      if (tipo === "Banco") {
+        manometroOK = validarManometroSeleccion(set, manometro);
+      }
+
       // --- VALIDACIÓN ADICIONAL POR DESVIACIÓN (solo Banco) ---
       let errorDesviacion = false;
       if (tipo === "Banco") {
@@ -280,28 +297,51 @@
 
       // Aprobación base (repetibilidad + sección) y suma la condición de desviación
       const aprobadoBase = erroresRep.length === 0 && erroresSec.length === 0;
-      const aprobadoFinal = aprobadoBase && !errorDesviacion;
+      const aprobadoFinal = aprobadoBase && !errorDesviacion && manometroOK;
 
       // Construir resultado textual
       let resultado = aprobadoFinal ? "✅ Aprobado" : "❌ Repite";
 
       if (erroresRep.length > 0) {
-        resultado += "\n\n- Falló prueba de repetibilidad\n" + erroresRep.join("\n");
+        resultado += "
+
+- Falló prueba de repetibilidad
+" + erroresRep.join("
+");
       }
       if (erroresSec.length > 0) {
-        resultado += "\n\n- Falló prueba por sección\n" + erroresSec.join("\n");
+        resultado += "
+
+- Falló prueba por sección
+" + erroresSec.join("
+");
       }
       if (errorDesviacion) {
-        resultado += "\n\n❌ Desviación de datos muy grande, prueba no pasa.";
+        resultado += "
+
+❌ Desviación de datos muy grande, prueba no pasa.";
       }
 
-      resultado += `\n\nRango repetibilidad: ${infRep.toFixed(2)} - ${supRep.toFixed(2)} PSI`;
-      resultado += `\nRango por sección: ${infSeccion.toFixed(2)} - ${supSeccion.toFixed(2)} PSI`;
+      if (!manometroOK) {
+        resultado += "
+
+❌ Manómetro mal seleccionado, prueba no pasa.";
+      }
+
+      resultado += `
+
+Rango repetibilidad: ${infRep.toFixed(2)} - ${supRep.toFixed(2)} PSI`;
+      resultado += `
+Rango por sección: ${infSeccion.toFixed(2)} - ${supSeccion.toFixed(2)} PSI`;
 
       if (tipo === "Banco") {
-        resultado += `\n\nDesviación total (STD/√n + incertidumbre): ${desviacionTotal.toFixed(4)} PSI`;
-        resultado += `\nLímite permitido (promedio * 1%): ${(promedio * 0.01).toFixed(4)} PSI`;
-        resultado += `\n(Incertidumbre manómetro seleccionada: ${incertidumbre.toFixed(2)} PSI)`;
+        resultado += `
+
+Desviación total (STD/√n + incertidumbre): ${desviacionTotal.toFixed(4)} PSI`;
+        resultado += `
+Límite permitido (promedio * 1%): ${(promedio * 0.01).toFixed(4)} PSI`;
+        resultado += `
+(Incertidumbre manómetro seleccionada: ${incertidumbre.toFixed(2)} PSI)`;
       }
 
       mostrarMensaje(resultado);
@@ -341,8 +381,20 @@
       if (pruebas.length === 0) return alert("No hay pruebas aprobadas para enviar.");
 
       const contenido = pruebas.map((p, i) =>
-        `#${i + 1} - ${p.fecha}\nCliente: ${p.client_proy}\nTag: ${p.tag}\nSet: ${p.set} PSI\nSección: ${p.seccion}\nTipo: ${p.tipo}\nManómetro: ${p.manometro}\nPresiones: ${p.presiones.join(", ")}\nPromedio: ${p.promedio.toFixed(2)} PSI\nDesviación total: ${p.desviacionTotal ? p.desviacionTotal.toFixed(4) : "N/A"} PSI\nIncertidumbre manómetro: ${p.incertidumbre.toFixed(2)} PSI`
-      ).join("\n----------------\n");
+        `#${i + 1} - ${p.fecha}
+Cliente: ${p.client_proy}
+Tag: ${p.tag}
+Set: ${p.set} PSI
+Sección: ${p.seccion}
+Tipo: ${p.tipo}
+Manómetro: ${p.manometro}
+Presiones: ${p.presiones.join(", ")}
+Promedio: ${p.promedio.toFixed(2)} PSI
+Desviación total: ${p.desviacionTotal ? p.desviacionTotal.toFixed(4) : "N/A"} PSI
+Incertidumbre manómetro: ${p.incertidumbre.toFixed(2)} PSI`
+      ).join("
+----------------
+");
 
       const params = {
         to_name: "Valser",
