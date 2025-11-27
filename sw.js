@@ -1,9 +1,9 @@
-const CACHE_NAME = 'presiones-cache-v16';
+const CACHE_NAME = 'presiones-cache-v17';
 const urlsToCache = [
   './',
-  './index.html?v=3',
-  './manifest.json?v=3',
-  './sw.js?v=3',
+  './index.html',
+  './manifest.json',
+  './sw.js',
   'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js',
   './icon-512.png',
   './icon-192.png',
@@ -51,6 +51,7 @@ self.addEventListener('fetch', event => {
     })
   );
 });
+
 
 
 
