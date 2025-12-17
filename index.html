@@ -86,10 +86,21 @@
         <option value="TP-010">TP-010 (1000 psi)</option>
       </select>
 
-      <input type="number" id="diametro_ext" placeholder="Diámetro externo" style="display:none;">
+      <select id="celdas" style="display:none;">
+        <option value="" disabled selected>Celda de carga</option>
+        <option value="CEC-001">CEC-001 (0.5 T)</option>
+        <option value="CEC-003">CEC-003 (2 T)</option>
+        <option value="CEC-004">CEC-004 (1 T)</option>
+        <option value="CEC-005">CEC-005 (1 T)</option>
+        <option value="CEC-006">CEC-006 (2 T)</option>
+        <option value="CEC-007">CEC-007 (5 T)</option>
+      </select>
+      
+
       <input type="number" id="pres_caldera" placeholder="Presión de caldera" style="display:none;">
     </div>
 
+    
     <div class="columna">
       <select id="sel_seccion">
         <option value="" disabled selected>Sección válvula</option>
@@ -106,6 +117,7 @@
         <option value="CEC-006">CEC-006 (2 T)</option>
         <option value="CEC-007">CEC-007 (5 T)</option>
       </select>
+      <input type="number" id="diametro_ext" placeholder="Diámetro externo" style="display:none;">
       <input type="number" id="diametro_int" placeholder="Diámetro interno" style="display:none;">
     </div>
   </div>
@@ -513,3 +525,4 @@
 
 </body>
 </html>
+
