@@ -595,24 +595,71 @@
                         const filaE3 = tablaE3.rows[r];
                         if (!filaE3) continue;
                         
-                        // Calcular Certificado
-                        let coef = 0.13/100;
-                        if (r === 1) coef = 0.13/100;
-                        else if (r >= 2 && r <= 5) coef = 0.07/100;
-                        else if (r === 6) coef = 0.08/100;
-                        
-                        const certificadoCalc = isFinite(fuerza_kN_2) ? coef * fuerza_kN_2 : NaN;
-                        const certificadoText = isFinite(certificadoCalc) ? certificadoCalc.toFixed(8) : "-";
-                        
-                        // Escribir en columna 4 (Certificado)
-                        if (filaE3.cells[4]) {
-                            filaE3.cells[4].textContent = certificadoText;
-                        }
-                        
-                        // Escribir en columna 2 (Derivación = mismo que Certificado)
-                        if (filaE3.cells[2]) {
-                            filaE3.cells[2].textContent = certificadoText;
-                        }
+            // ===============================
+            // Calcular Certificado
+            // ===============================
+            let coef = 0.13 / 100;
+            
+            if (r === 1) {
+                coef = 0.13 / 100;
+            } else if (r >= 2 && r <= 5) {
+                coef = 0.07 / 100;
+            } else if (r === 6) {
+                coef = 0.08 / 100;
+            }
+            
+            const certificadoCalc = isFinite(fuerza_kN_2)
+                ? coef * fuerza_kN_2
+                : NaN;
+            
+            const certificadoText = isFinite(certificadoCalc)
+                ? certificadoCalc.toFixed(8)
+                : "-";
+            
+            // Escribir Certificado
+            if (filaE3.cells[4]) {
+                filaE3.cells[4].textContent = certificadoText;
+            }
+            
+            // ===============================
+            // Calcular Derivación
+            // ===============================
+            let derivacion;
+            
+            switch (r) {
+                case 1:
+                    derivacion = certificadoCalc;
+                    break;
+            
+                case 2:
+                    derivacion = 0.0519;
+                    break;
+            
+                case 3:
+                    derivacion = 0.2155;
+                    break;
+            
+                case 4:
+                    derivacion = 0.0920;
+                    break;
+            
+                case 5:
+                    derivacion = 0.1875;
+                    break;
+            
+                case 6:
+                    derivacion = certificadoCalc;
+                    break;
+            
+                default:
+                    derivacion = NaN;
+            }
+            
+            if (filaE3.cells[2]) {
+                filaE3.cells[2].textContent = isFinite(derivacion)
+                    ? derivacion.toFixed(8)
+                    : "-";
+            }
                     } catch (ee) {
                         console.warn('Error actualizando fila', r, 'de Datos_ecuación_3:', ee);
                         continue;
