@@ -1,4 +1,4 @@
-const CACHE_NAME = 'presiones-cache-v23';
+const CACHE_NAME = 'presiones-cache-v24';
 const urlsToCache = [
   './',
   './index.html',
