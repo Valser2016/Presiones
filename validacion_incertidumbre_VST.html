@@ -650,17 +650,8 @@
                     const u_interp = interp;                    // ya dada
                     const u_cert = factorCert !== 0 ? (certificado / factorCert) : 0;
 
-                    // Incertidumbre por lectura
-                    const u_lectura = desvia / Math.sqrt(3);
-                    
-                    // Incertidumbre combinada
-                    const u_comb = Math.sqrt(
-                        Math.pow(u_res, 2) +
-                        Math.pow(u_der, 2) +
-                        Math.pow(u_interp, 2) +
-                        Math.pow(u_cert, 2) +
-                        Math.pow(u_lectura, 2)
-                    );
+                    // combinado (no incluye u_lectura aquí según tu fórmula)
+                    const u_comb = Math.sqrt(u_res**2 + u_der**2 + u_interp**2 + u_cert**2);
 
                     // escribir en tabla Magnitud (celdas defensivas)
                     if (tablaMagnitud.rows[i].cells[1]) tablaMagnitud.rows[i].cells[1].textContent = u_res.toFixed(9);
