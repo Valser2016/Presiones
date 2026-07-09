@@ -354,7 +354,7 @@
           let coef_certificado=0.07/100;
           if(celdas==="CEC-001") coef_certificado=0.13/100;
           else if(celdas==="CEC-003" || celdas==="CEC-004" || celdas==="CEC-006") coef_certificado=0.07/100;
-          else if(celdas==="CEC-007") coef_certificado=0.29/100;
+          else if(celdas==="CEC-007") coef_certificado=0.08/100;
           else coef_certificado=0.07/100;
           
           const certificado_celda_kN=isFinite(fuerza_kN)?coef_certificado*fuerza_kN:NaN;
@@ -366,7 +366,7 @@
           const u_cert_celda=isFinite(certificado_celda_kN)?certificado_celda_kN/celda_data.factor_cert:0;
           const u_fuerza_kN_calc=Math.sqrt(u_res_celda**2+u_der_celda**2+u_interp_celda**2+u_cert_celda**2);
           
-          // Grados libertad celda
+          // Grados libertad celda interpolacion
           let divisor_celda=9;
           if(celdas==="CEC-001") divisor_celda=11;
           else if(celdas==="CEC-003") divisor_celda=8;
@@ -375,13 +375,23 @@
           else if(celdas==="CEC-006") divisor_celda=9;
           else if(celdas==="CEC-007") divisor_celda=9;
           else divisor_celda=9;
+
+          // Grados libertad celda deriva
+          let divisor_celdaderv=200;
+          if(celdas==="CEC-001") divisor_celdaderv=50;
+          else if(celdas==="CEC-003") divisor_celdaderv=200;
+          else if(celdas==="CEC-004") divisor_celdaderv=200;
+          else if(celdas==="CEC-005") divisor_celdaderv=200;
+          else if(celdas==="CEC-006") divisor_celdaderv=200;
+          else if(celdas==="CEC-007") divisor_celdaderv=50;
+          else divisor_celda=9;
           
           const Ures4_celda=Math.pow(u_res_celda,4);
           const Uder4_celda=Math.pow(u_der_celda,4);
           const Uint4_celda=Math.pow(u_interp_celda,4);
           const Ucert4_celda=Math.pow(u_cert_celda,4);
           const Ucomb4_celda=Math.pow(u_fuerza_kN_calc,4);
-          const denom_celda=(Ures4_celda/200)+(Uder4_celda/50)+(Uint4_celda/divisor_celda)+(Ucert4_celda/200);
+          const denom_celda=(Ures4_celda/200)+(Uder4_celda/divisor_celdaderv)+(Uint4_celda/divisor_celda)+(Ucert4_celda/200);
           const v_fuerza=denom_celda>0?Ucomb4_celda/denom_celda:Infinity;
           
           // ========== PASO 5: INCERTIDUMBRE PRESIÓN GENERADA ==========
