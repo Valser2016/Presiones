@@ -349,19 +349,63 @@
           const denom_trans=(Ures4_trans/200)+(Uder4_trans/50)+(Uint4_trans/divisor_trans)+(Ucert4_trans/200);
           const v_indicada=denom_trans>0?Ucomb4_trans/denom_trans:Infinity;
           
-          // ========== PASO 3: CERTIFICADO DINÁMICO DE CELDA ==========
-          // Mapeo de celda a fila de tabla y coeficiente
-          let coef_certificado=0.07/100;
-          if(celdas==="CEC-001") coef_certificado=0.13/100;
-          else if(celdas==="CEC-003" || celdas==="CEC-004" || celdas==="CEC-006") coef_certificado=0.07/100;
-          else if(celdas==="CEC-007") coef_certificado=0.08/100;
-          else coef_certificado=0.07/100;
+          // ========== PASO 3: CERTIFICADO Y DERIVA ==========
+          let coef_certificado = 0.07 / 100;
           
-          const certificado_celda_kN=isFinite(fuerza_kN)?coef_certificado*fuerza_kN:NaN;
+          if (celdas === "CEC-001") {
+              coef_certificado = 0.13 / 100;
+          }
+          else if (
+              celdas === "CEC-003" ||
+              celdas === "CEC-004" ||
+              celdas === "CEC-005" ||
+              celdas === "CEC-006"
+          ) {
+              coef_certificado = 0.07 / 100;
+          }
+          else if (celdas === "CEC-007") {
+              coef_certificado = 0.08 / 100;
+          }
+          
+          const certificado_celda_kN =
+              isFinite(fuerza_kN)
+                  ? coef_certificado * fuerza_kN
+                  : NaN;
+          
+          
+          // Deriva de la celda
+          let deriva_celda_kN = NaN;
+          
+          switch (celdas) {
+          
+              case "CEC-001":
+                  deriva_celda_kN = certificado_celda_kN;
+                  break;
+          
+              case "CEC-003":
+                  deriva_celda_kN = 0.0519;
+                  break;
+          
+              case "CEC-004":
+                  deriva_celda_kN = 0.2155;
+                  break;
+          
+              case "CEC-005":
+                  deriva_celda_kN = 0.0920;
+                  break;
+          
+              case "CEC-006":
+                  deriva_celda_kN = 0.1875;
+                  break;
+          
+              case "CEC-007":
+                  deriva_celda_kN = certificado_celda_kN;
+                  break;
+          }
           
           // ========== PASO 4: INCERTIDUMBRE FUERZA (CELDA) ==========
           const u_res_celda=celda_data.resolucion/Math.sqrt(12);
-          const u_der_celda=isFinite(certificado_celda_kN)?certificado_celda_kN/Math.sqrt(3):0;
+          const u_der_celda = isFinite(deriva_celda_kN)? deriva_celda_kN / Math.sqrt(3): 0;
           const u_interp_celda=celda_data.u_interp;
           const u_cert_celda=isFinite(certificado_celda_kN)?certificado_celda_kN/celda_data.factor_cert:0;
           const u_fuerza_kN_calc=Math.sqrt(u_res_celda**2+u_der_celda**2+u_interp_celda**2+u_cert_celda**2);
