@@ -160,9 +160,9 @@
     }
 
     const MANOMETER_DATA = {
-      "MAN-002": {resolucion:0.1, deriva:0.26, u_interp:0.0113964821653223, certificado:0.24, factor_cert:2, divisor_interp:6},
+      "MAN-002": {resolucion:0.1, deriva:0.26, u_interp:0.0193221457847566, certificado:0.24, factor_cert:2, divisor_interp:10},
       "MAN-003": {resolucion:0.1, deriva:0.45, u_interp:0.0129349776603704, certificado:0.24, factor_cert:2, divisor_interp:10},
-      "MAN-005": {resolucion:0.1, deriva:0.092, u_interp:0.0169880966040896, certificado:0.092, factor_cert:2, divisor_interp:10},
+      "MAN-005": {resolucion:0.1, deriva:0.047, u_interp:0.0106166790541456, certificado:0.1, factor_cert:2, divisor_interp:10},
       "MAN-006": {resolucion:0.1, deriva:0.097, u_interp:0.00821195963834762, certificado:0.097, factor_cert:2, divisor_interp:10}
     };
 
@@ -180,11 +180,11 @@
     // Datos de celda de carga (Fuerza/Presión generada)
     const CELDA_DATA = {
       "CEC-001": {resolucion:0.0004, u_interp:0.00120499518150945, certificado:0.0004, factor_cert:2, modelo:"VST3", capacidad:"0.5T"},
-      "CEC-004": {resolucion:0.001, u_interp:0.00733851478857701, certificado:0.001, factor_cert:2, modelo:"VST3", capacidad:"1T"},
-      "CEC-003": {resolucion:0.001, u_interp:0.0234029276640666, certificado:0.001, factor_cert:2, modelo:"VST3", capacidad:"2T"},
-      "CEC-005": {resolucion:0.001, u_interp:0.024671976476918, certificado:0.001, factor_cert:2, modelo:"VST2", capacidad:"1T"},
-      "CEC-006": {resolucion:0.001, u_interp:0.0223125119839804, certificado:0.001, factor_cert:2, modelo:"VST2", capacidad:"2T"},
-      "CEC-007": {resolucion:0.04, u_interp:0.0538769501113177, certificado:0.04, factor_cert:2, modelo:"VST2", capacidad:"5T"}
+      "CEC-004": {resolucion:0.001, u_interp:0.0019895681089669, certificado:0.001, factor_cert:2, modelo:"VST3", capacidad:"1T"},
+      "CEC-003": {resolucion:0.001, u_interp:0.010798668560278, certificado:0.001, factor_cert:2, modelo:"VST3", capacidad:"2T"},
+      "CEC-005": {resolucion:0.001, u_interp:0.00118487446457948, certificado:0.001, factor_cert:2, modelo:"VST2", capacidad:"1T"},
+      "CEC-006": {resolucion:0.001, u_interp:0.00478776930608893, certificado:0.001, factor_cert:2, modelo:"VST2", capacidad:"2T"},
+      "CEC-007": {resolucion:0.04, u_interp:0.0219396564342441, certificado:0.04, factor_cert:2, modelo:"VST2", capacidad:"5T"}
     };
 
     document.addEventListener('DOMContentLoaded', () => {
