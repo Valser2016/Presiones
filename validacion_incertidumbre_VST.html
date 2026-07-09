@@ -599,7 +599,7 @@
                         let coef = 0.13/100;
                         if (r === 1) coef = 0.13/100;
                         else if (r >= 2 && r <= 5) coef = 0.07/100;
-                        else if (r === 6) coef = 0.29/100;
+                        else if (r === 6) coef = 0.08/100;
                         
                         const certificadoCalc = isFinite(fuerza_kN_2) ? coef * fuerza_kN_2 : NaN;
                         const certificadoText = isFinite(certificadoCalc) ? certificadoCalc.toFixed(8) : "-";
@@ -776,13 +776,22 @@
                             else if (r === 5) divInterp = 9;
                             else if (r === 6) divInterp = 9;
 
+                            // divisores personalizados deriva
+                            let divderv = 200; // por defecto
+                            if (r === 1) divInterp = 11;
+                            else if (r === 2) divderv = 50;
+                            else if (r === 3) divderv = 200;
+                            else if (r === 4) divderv = 200;
+                            else if (r === 5) divderv = 200;
+                            else if (r === 6) divderv = 50;
+
                             const Ures4_m2  = Math.pow(u_res_val, 4);
                             const Uder4_m2  = Math.pow(u_der_val, 4);
                             const Uint4_m2  = Math.pow(u_interp_val, 4);
                             const Ucert4_m2 = Math.pow(u_cert_val, 4);
                             const Ucomb4_m2 = Math.pow(u_comb, 4);
 
-                            const denom_m2 = (Ures4_m2 / 200) + (Uder4_m2 / 50) + (Uint4_m2 / divInterp) + (Ucert4_m2 / 200);
+                            const denom_m2 = (Ures4_m2 / 200) + (Uder4_m2 / divderv) + (Uint4_m2 / divInterp) + (Ucert4_m2 / 200);
                             let v_m2 = (denom_m2 > 0 && isFinite(Ucomb4_m2)) ? (Ucomb4_m2 / denom_m2) : Infinity;
 
                             // escribir en la última columna (índice 6)
