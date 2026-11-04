@@ -261,20 +261,57 @@ document.addEventListener("DOMContentLoaded", () => {
         tablaManometros.rows[i].cells[4].textContent = (u_pres * k).toFixed(10);
     }
 
-    const primerU = tablaManometros.rows[1] && tablaManometros.rows[1].cells[4]
-        ? parseFloat(tablaManometros.rows[1].cells[4].textContent)
-        : null;
+
+    // ======================================
+    // INCERTIDUMBRE DEL MANÓMETRO SELECCIONADO
+    // ======================================
     const payload = JSON.parse(localStorage.getItem("prueba_actual") || "null");
+
+    // Relación entre el código del manómetro y la fila de la tabla
+    const filasManometros = {
+        "MAN-003": 1, // Crystal 5000 psi
+        "MAN-002": 2, // Additel 3000 psi
+        "MAN-005": 3, // Crystal 1000 psi
+        "MAN-006": 4  // Wika 1000 psi
+    };
+
+    const filaSeleccionada = payload && filasManometros[payload.manometro];
+
+    const USeleccionada = filaSeleccionada
+        ? parseFloat(
+            tablaManometros.rows[filaSeleccionada].cells[4].textContent
+          )
+        : null;
+
+    // Criterio de aceptación del 1%
     const criterio = payload && isFinite(Number(payload.promedio))
         ? Number(payload.promedio) * 0.01
         : NaN;
-    const aprobadoIncertidumbre = primerU !== null && !isNaN(primerU) && isFinite(criterio) && primerU <= criterio;
-    localStorage.setItem("resultado_aprobado", String(aprobadoIncertidumbre));
 
-    const resultadoBanco = primerU !== null
-        ? `${aprobadoIncertidumbre ? "✅" : "❌"} Validación banco ${aprobadoIncertidumbre ? "completada" : "rechazada por incertidumbre"}\nU expandida: ${primerU.toFixed(6)} psi\nCriterio (1%) = ${isFinite(criterio) ? criterio.toFixed(6) : "N/A"} psi`
-        : "❌ Validación banco rechazada: no se pudo calcular U expandida";
+    const aprobadoIncertidumbre =
+        USeleccionada !== null &&
+        !isNaN(USeleccionada) &&
+        isFinite(criterio) &&
+        USeleccionada <= criterio;
+
+    localStorage.setItem(
+        "resultado_aprobado",
+        String(aprobadoIncertidumbre)
+    );
+
+    // Resultado final usando la incertidumbre correcta
+    const resultadoBanco = USeleccionada !== null && !isNaN(USeleccionada)
+        ? `${aprobadoIncertidumbre ? "✅" : "❌"} Validación banco ${
+            aprobadoIncertidumbre
+                ? "completada"
+                : "rechazada por incertidumbre"
+          }\nManómetro seleccionado: ${payload.manometro}
+U expandida: ${USeleccionada.toFixed(6)} psi
+Criterio (1%) = ${isFinite(criterio) ? criterio.toFixed(6) : "N/A"} psi`
+        : "❌ Validación banco rechazada: no se pudo calcular la U expandida del manómetro seleccionado";
+
     localStorage.setItem("resultado_final", resultadoBanco);
+
 
 });
 </script>
