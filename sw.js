@@ -1,5 +1,5 @@
 /* Service Worker - Verificador de Presiones VALSER (Offline First) */
-const CACHE_NAME = 'presiones-offline-v12';
+const CACHE_NAME = 'presiones-offline-v13';
 const APP_SHELL = [
   './',
   './index.html',
